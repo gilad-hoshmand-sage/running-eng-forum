@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forum demo game</title>
+  </head>
+  <body>
+    <canvas id="game" data-testid="canvas" tabindex="0"></canvas>
+    <div id="crosshair" aria-hidden="true"></div>
+    <div id="banner" data-testid="banner">Loading…</div>
+    <pre id="diag" data-testid="diagnostics" hidden></pre>
+    <div id="hint" data-testid="hint">
+      <b>Click</b> to look with the mouse · <b>W A S D</b> walk · <b>Shift</b> run · <b>Space</b> jump ·
+      <b>R</b> respawn · <b>O</b> diagnostics · <b>Esc</b> release mouse
+    </div>
+    <div id="build" data-testid="build"></div>
+    <div id="fatal" data-testid="fatal" hidden></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

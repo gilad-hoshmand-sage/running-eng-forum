@@ -1,0 +1,84 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #a9d4f5;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  color: #fff;
+  user-select: none;
+  -webkit-user-select: none;
+}
+#game {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  outline: none;
+}
+#crosshair {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+}
+#banner,
+#hint,
+#build,
+#diag {
+  position: fixed;
+  background: rgba(20, 24, 30, 0.72);
+  border-radius: 6px;
+  padding: 6px 10px;
+  pointer-events: none;
+}
+#banner {
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 16px;
+  padding: 10px 16px;
+}
+#hint {
+  left: 12px;
+  bottom: 12px;
+  max-width: calc(100% - 320px);
+}
+#build {
+  right: 12px;
+  bottom: 12px;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+#diag {
+  top: 12px;
+  left: 12px;
+  margin: 0;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre;
+}
+#fatal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: #20242b;
+  font-size: 18px;
+  text-align: center;
+  white-space: pre-wrap;
+}
+[hidden] {
+  display: none !important;
+}
