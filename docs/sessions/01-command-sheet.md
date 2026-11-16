@@ -19,8 +19,8 @@ In the game, press `O` for the diagnostics overlay. The build ID is also shown t
 Needs Node 20.19 or newer and git.
 
 ```bash
-git clone <repository URL>
-cd <repository folder>
+git clone https://github.com/gilad-hoshmand-sage/running-eng-forum.git
+cd running-eng-forum
 npm install
 ```
 

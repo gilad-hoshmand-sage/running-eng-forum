@@ -2,6 +2,8 @@
 
 A monthly engineering forum about how software is built, served, deployed and operated, using a small browser 3D game as the shared demo application.
 
+Repository: https://github.com/gilad-hoshmand-sage/running-eng-forum
+
 **Status:** the game baseline is built and tested; session preparation has not started. See [docs/tasks.md](docs/tasks.md).
 
 To run the game: `npm install`, then `npm run dev`. Details: [apps/game/README.md](apps/game/README.md).
