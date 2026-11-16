@@ -65,7 +65,7 @@ Fetched once at startup. Edit it in `dist/` (or `public/` in dev) and reload; no
 
 | Key | Type | Default | Meaning |
 | --- | --- | --- | --- |
-| `deploymentLabel` | string | `"unlabelled"` | Name of this deployment. Shown bottom-right and in the diagnostics overlay. |
+| `deploymentLabel` | string | `"unlabelled"` | Name of this deployment. Shown top-right and in the diagnostics overlay. |
 | `serverUrl` | string or `null` | `null` | Backend address. Shown in the overlay only; this build has no network code. |
 
 If `config.json` is missing or invalid, the game starts with the defaults and the overlay's `config` line says so. Unknown keys are ignored.
@@ -172,7 +172,7 @@ Limits of the player, useful when editing: 1.8 m tall, 0.7 m wide, steps up ledg
 
 The player also respawns automatically after leaving the world bounds.
 
-Always visible: a controls hint (bottom-left) and `<deploymentLabel> · build <buildId>` (bottom-right).
+Always visible: a controls hint (bottom-left) and `<deploymentLabel> · build <buildId>` (top-right).
 
 Diagnostics overlay (top-left, hidden by default):
 

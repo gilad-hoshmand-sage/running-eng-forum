@@ -23,15 +23,28 @@ test.describe('play', () => {
     await page.keyboard.up('ArrowLeft');
     expect(Date.now() - clickedAt).toBeLessThan(5000);
 
-    // Mouse look needs pointer lock, which not every headless browser grants.
-    const s = await state(page);
-    test.info().annotations.push({ type: 'pointer-lock', description: String(s.pointerLocked) });
-    if (s.pointerLocked) {
-      await page.mouse.move(300, 200);
-      await page.mouse.move(420, 260, { steps: 5 });
-      const after = await state(page);
-      test.info().annotations.push({ type: 'mouse-look-moved-view', description: String(after.yawDeg !== s.yawDeg || after.pitchDeg !== s.pitchDeg) });
-    }
+    // Whether this browser granted the real mouse capture; recorded, not required (headless browsers refuse it).
+    test.info().annotations.push({ type: 'pointer-lock-granted', description: String((await state(page)).pointerLocked) });
+  });
+
+  test('criterion 1: mouse movement turns the view while the mouse is captured', async ({ page }) => {
+    await openGame(page);
+    // Automated browsers do not grant pointer lock, so the captured state is simulated here.
+    // Real mouse capture is part of the organizer's play check.
+    await page.evaluate(() => {
+      const canvas = document.querySelector('canvas')!;
+      Object.defineProperty(document, 'pointerLockElement', { configurable: true, get: () => canvas });
+      document.dispatchEvent(new Event('pointerlockchange'));
+    });
+    await expect(page.getByTestId('banner')).toBeHidden();
+    const before = await state(page);
+    expect(before.pointerLocked).toBe(true);
+    await page.evaluate(() => document.dispatchEvent(new MouseEvent('mousemove', { movementX: 200, movementY: 100 })));
+    const after = await state(page);
+    expect(after.yawDeg).toBeLessThan(before.yawDeg - 10); // mouse right turns right
+    expect(after.pitchDeg).toBeLessThan(before.pitchDeg - 5); // mouse down looks down
+    await page.evaluate(() => document.dispatchEvent(new MouseEvent('mousemove', { movementX: 0, movementY: 100000 })));
+    expect((await state(page)).pitchDeg).toBeGreaterThanOrEqual(-89.01); // cannot flip over
   });
 
   test('criterion 2: spawn to the upper floor and back outside', async ({ page }) => {

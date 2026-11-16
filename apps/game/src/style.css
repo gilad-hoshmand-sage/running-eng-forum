@@ -50,11 +50,11 @@ body {
 #hint {
   left: 12px;
   bottom: 12px;
-  max-width: calc(100% - 320px);
+  max-width: calc(100% - 44px);
 }
 #build {
   right: 12px;
-  bottom: 12px;
+  top: 12px;
   font-family: ui-monospace, Menlo, Consolas, monospace;
   font-size: 12px;
 }
