@@ -1,0 +1,17 @@
+{
+  "name": "eng-forum",
+  "private": true,
+  "description": "Engineering forum planning documents and the demo game",
+  "workspaces": [
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "dev": "npm run dev --workspace apps/game --",
+    "build": "npm run build --workspace apps/game --",
+    "preview": "npm run preview --workspace apps/game --",
+    "test": "npm run test --workspace apps/game --"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@eng-forum/game",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "npm run build && playwright install chromium && playwright test --project=chromium",
+    "test:browsers": "npm run build && playwright install chromium firefox webkit && playwright test"
+  },
+  "dependencies": {
+    "@dimforge/rapier3d": "^0.21.0",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^26.6.6",
+    "@types/three": "^0.187.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vite-plugin-wasm": "^3.6.0"
+  }
+}
