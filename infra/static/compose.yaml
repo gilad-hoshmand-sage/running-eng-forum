@@ -1,0 +1,10 @@
+# Serves the built game (apps/game/dist) with a stock nginx image.
+# Run from the repository root:  npm run serve:nginx
+services:
+  web:
+    image: nginx:1.29-alpine
+    ports:
+      - "127.0.0.1:8082:80"
+    volumes:
+      - ../../apps/game/dist:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro

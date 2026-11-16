@@ -144,6 +144,8 @@ Verified 2026-11-16 on macOS with Node 24. Flags, ports and extras: [apps/game/R
 | `npm run build` | Produce the deployable build in `apps/game/dist/` |
 | `npm run preview` | Serve the built output at `http://localhost:4173/` |
 | `npm test` | Build, then run acceptance tests against the built output |
+| `npm run serve:python` | Serve the built output with Python's `http.server` on port 8081 |
+| `npm run serve:nginx` | Serve the built output with nginx in Docker on port 8082 |
 
 Differences from the proposal: `npm test` always rebuilds first, and it downloads Playwright's Chromium on first use. Both servers listen on `localhost` only unless `-- --host` is added.
 

@@ -25,7 +25,7 @@ Effort: **M** (was S; the two hosted deployments are now needed before this sess
 Uncertainties:
 
 - Whether the corporate network reaches both hosting domains; check in rehearsal.
-- How the two hosts and the local servers differ on `.wasm` content type, compression and cache headers; confirm in rehearsal so the comparison is real.
+- How the two hosts differ from each other on compression and cache headers; record once they are deployed. Local-server differences are recorded in § Organizer runbook.
 
 ## What attendees start with
 
@@ -74,6 +74,38 @@ Learning.
 - Attendees report the three DevTools findings aloud or in chat.
 - The same build ID appears on both public URLs and under all three local servers.
 
+## Organizer runbook
+
+Verified locally on 2026-11-16 (macOS, Chromium). Hosted URLs are not yet deployed, so host-to-host differences are still to be recorded.
+
+Attendee handout: [01-command-sheet.md](01-command-sheet.md). Server details: [infra/static/README.md](../../infra/static/README.md).
+
+**The live edit.** With `npm run dev` running, in `apps/game/public/world.json` change the `buildingWall` material's `color` from `#e9dfc8` to `#d9534f` and save. The whole office turns red; the browser reloaded 0.5 s after the save in testing. Undo with `git checkout apps/game/public/world.json`.
+
+**Three local servers.** After `npm run build`, start each in its own terminal before the session: `npm run preview` (4173), `npm run serve:python` (8081), `npm run serve:nginx` (8082). All three served a playable game with the same build ID.
+
+Observed response headers, requested with `Accept-Encoding: gzip, br`:
+
+| | Vite preview | Python `http.server` | nginx container |
+| --- | --- | --- | --- |
+| `Server` header | none | `SimpleHTTP Python/3.x` | `nginx/1.29.x` |
+| HTTP version | 1.1 | 1.0 | 1.1 |
+| Compression of HTML, JS, JSON | gzip | none | gzip |
+| Compression of `.wasm` | none (3.08 MB sent) | none (3.08 MB) | gzip (1.31 MB) |
+| `Cache-Control` | `no-cache` on everything | none | none |
+| `ETag` | yes | no | yes |
+| `Last-Modified` | assets only | yes | yes |
+| JS content type | `text/javascript` | `text/javascript` | `application/javascript` |
+| `.wasm` content type | `application/wasm` | `application/wasm` | `application/wasm` |
+| Unknown path | `200` with the entry page | `404` | `404` |
+
+Talking points from the table:
+
+- Compression is a server choice: the same `.wasm` file is 3.08 MB from two servers and 1.31 MB from nginx, because [nginx.conf](../../infra/static/nginx.conf) lists `application/wasm`.
+- None of the three sets a useful cache policy for hashed files. That is next-but-one month's topic ([S03](03-caching-and-releases.md)).
+- The preview server answers unknown paths with the entry page, a convenience for single-page apps that a plain file server does not have.
+- All three send the correct `.wasm` content type, so there is no difference to show there.
+
 ## Starting state, reset, rehearsal
 
 Starting state: repository at the session tag; both hosted deployments on that build; dependencies installed locally; no local servers running; `world.json` unmodified.
@@ -96,6 +128,7 @@ Rehearsal checklist:
 
 ## Links
 
+- Handout: [01-command-sheet.md](01-command-sheet.md)
 - Tasks: [T-020 to T-023](../tasks.md#phase-2-session-1-preparation)
 - Design: [§ 4 Local runtime, build artifacts and delivery](../design.md#4-local-runtime-build-artifacts-and-delivery)
 - Decisions: [D-02](../decisions.md#d-02), [D-08](../decisions.md#d-08), [D-19](../decisions.md#d-19)
