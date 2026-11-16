@@ -250,7 +250,7 @@ Proposed ([D-14](decisions.md#d-14)):
 
 - GitHub Actions, one workflow per deployable, each with a `paths` filter.
 - The game workflow builds once and uploads the same `dist/` to each static host, writing a per-host `config.json`.
-- Game workflow: `.github/workflows/game.yml`. It deploys to GitHub Pages with label `github-pages` and needs no secret; the Cloudflare job is added by T-031 and T-032. *Proposed* until its first run ([T-041](tasks.md#phase-2-session-1-preparation)).
+- Game workflow: `.github/workflows/game.yml`. It deploys to GitHub Pages with label `github-pages` and needs no secret; the Cloudflare job is added by T-031 and T-032. Verified by manual dispatch on 2026-11-16 ([T-041](tasks.md#phase-2-session-1-preparation)); the push trigger has not fired yet. Live at https://gilad-hoshmand-sage.github.io/running-eng-forum/
 - Deploy tokens are stored as GitHub Actions secrets.
 - Every deployable keeps a manual deploy command for rehearsal and for recovery if Actions is unavailable.
 - Every hosted demonstration has a local equivalent (Docker or a plain process) as its fallback.

@@ -201,7 +201,7 @@ Not verified this session; confirm before relying on them:
 
 - Whether Cloudflare and Render ask for a payment card at sign-up.
 - Docker support on Render free instances.
-- GitHub Pages default cache headers and lack of custom header control.
+- GitHub Pages lack of custom header control. Its default headers were observed on 2026-11-16: [S01 § Organizer runbook](sessions/01-dev-server-and-build.md#organizer-runbook).
 - GitHub Actions being free for public repositories on standard runners.
 
 Expected load against limits: 30 attendees loading a build of a few megabytes is negligible for every static host listed. Ten players sending 10–20 position messages per second for 45 minutes is roughly 270,000–540,000 messages; under Durable Objects billing that is about 13,500–27,000 requests, within the daily limit. Measure before S06.

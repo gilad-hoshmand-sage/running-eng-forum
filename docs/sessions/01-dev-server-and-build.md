@@ -76,7 +76,7 @@ Learning.
 
 ## Organizer runbook
 
-Verified locally on 2026-11-16 (macOS, Chromium). Hosted URLs are not yet deployed, so host-to-host differences are still to be recorded.
+Verified locally on 2026-11-16 (macOS, Chromium). GitHub Pages is deployed and its headers are recorded below; the Cloudflare deployment does not exist yet, so host-to-host differences are still to be recorded.
 
 Attendee handout: [01-command-sheet.md](01-command-sheet.md). Server details: [infra/static/README.md](../../infra/static/README.md).
 
@@ -105,6 +105,25 @@ Talking points from the table:
 - None of the three sets a useful cache policy for hashed files. That is next-but-one month's topic ([S03](03-caching-and-releases.md)).
 - The preview server answers unknown paths with the entry page, a convenience for single-page apps that a plain file server does not have.
 - All three send the correct `.wasm` content type, so there is no difference to show there.
+
+**Public host: GitHub Pages.** https://gilad-hoshmand-sage.github.io/running-eng-forum/ (label `github-pages`). Observed 2026-11-16 with `curl -I` and `Accept-Encoding: gzip, br`:
+
+| | GitHub Pages |
+| --- | --- |
+| `Server` header | `GitHub.com`, plus `Via: 1.1 varnish` and `X-Cache` (a CDN in front) |
+| HTTP version | 2 |
+| Compression of HTML, JS | gzip |
+| Compression of `.wasm` | gzip (1.18 MB) |
+| Compression of `config.json` (61 bytes) | none |
+| `Cache-Control` | `max-age=600` on everything, hashed or not |
+| `ETag`, `Last-Modified` | yes |
+| JS content type | `application/javascript` |
+| `.wasm` content type | `application/wasm` |
+| Unknown path | `404` with GitHub's own page |
+| Other | `Access-Control-Allow-Origin: *` |
+
+- Ten minutes of caching on every file, including `config.json` and the entry page, cannot be changed on this host. That is the contrast for [S03](03-caching-and-releases.md).
+- The URL must keep its trailing slash.
 
 ## Starting state, reset, rehearsal
 
