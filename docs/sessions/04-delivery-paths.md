@@ -21,7 +21,7 @@ Effort: **L**. Tasks: [Later work](../tasks.md#later-work-tentative).
 
 Uncertainties:
 
-- Public hosting for the container at zero cost without a card ([Q-03](../decisions.md#q-03)). Fallback is the container on the laptop behind a tunnel.
+- Public hosting for the container at zero cost without a card ([Q-03](../decisions.md#q-03)). There is no laptop-hosted fallback ([D-19](../decisions.md#d-19)); without a host, Path A is shown on the shared screen only.
 - Free container hosts sleep when idle; the cold start must be planned for or used as a teaching point.
 - Whether three paths fit in 45 minutes. If not, split: A versus B, then C.
 
@@ -76,11 +76,11 @@ Rehearsal checklist:
 1. All three URLs show the same build ID.
 2. Container woken ten minutes before; logs visible.
 3. Function logs stream.
-4. Local container plus tunnel fallback works.
+4. Local container runs on the shared screen as a last resort.
 
 ## Fallback
 
-Run Path A locally behind a tunnel. If Path C fails, read the function and show captured output.
+If Path A's host fails, run the container locally on the shared screen and show captured logs. If Path C fails, read the function and show captured output.
 
 ## Links
 

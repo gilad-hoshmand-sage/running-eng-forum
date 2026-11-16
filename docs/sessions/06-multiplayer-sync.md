@@ -80,7 +80,7 @@ Rehearsal checklist:
 
 ## Fallback
 
-A recorded side-by-side video of the modes. Run both servers locally with several browser windows.
+A recorded side-by-side video of the modes. Run both servers locally on the shared screen with several browser windows.
 
 ## Links
 

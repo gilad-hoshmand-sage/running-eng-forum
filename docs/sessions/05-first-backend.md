@@ -23,7 +23,7 @@ Effort: **L**. Tasks: [Later work](../tasks.md#later-work-tentative).
 Uncertainties:
 
 - Node hosting at zero cost: sleep and cold-start behaviour, WebSocket idle timeouts ([D-12](../decisions.md#d-12)).
-- WebSocket support through a Quick Tunnel for the fallback path; confirm in rehearsal.
+- There is no live substitute for the hosted server ([D-19](../decisions.md#d-19)); a second cloud deployment of the server may be worth keeping as a spare.
 
 ## What attendees start with
 
@@ -76,11 +76,11 @@ Rehearsal checklist:
 1. Ten browser tabs join and chat.
 2. Restart and reconnect behave as described.
 3. A server-only push deploys only the server.
-4. Laptop plus tunnel fallback works with WebSockets.
+4. The shared-screen fallback (local server, two browser windows) works.
 
 ## Fallback
 
-Run the server on the laptop behind a tunnel and switch `serverUrl`. If that fails, demonstrate with two local browser windows.
+If the hosted server fails, switch `serverUrl` to a spare cloud deployment if one exists; otherwise demonstrate on the shared screen with a local server and two browser windows.
 
 ## Links
 

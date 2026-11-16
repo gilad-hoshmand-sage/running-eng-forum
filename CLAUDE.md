@@ -19,5 +19,6 @@ Read [README.md](README.md) first, then the document for your task:
 - Reference documents by path, section heading and ID (`D-07`, `Q-02`, `T-010`, `G0`, `S03`). No line numbers.
 - Mark commands and configuration as *proposed* until they have been run; record verification in [docs/tasks.md](docs/tasks.md).
 - Zero cost. Check free-tier limits and payment-card requirements against current official sources before adopting a service, and record the reference in [docs/decisions.md](docs/decisions.md) § References.
+- Online only ([D-19](docs/decisions.md#d-19)): attendee-facing demonstrations run on cloud hosting at public URLs. Never plan tunnels, laptop-hosted servers or similar workarounds, including as fallbacks.
 - The repository is public. Never commit secrets; deployment tokens live in GitHub Actions secrets.
 - Human-facing text is short and scannable. AI-facing context is complete without filler.

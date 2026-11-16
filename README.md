@@ -27,7 +27,8 @@ To run the game: `npm install`, then `npm run dev`. Details: [apps/game/README.m
 
 - Zero cost. Services that need no payment card are preferred; a card-required free tier needs an explicit decision.
 - The game is an AI-developed black box. Humans use its commands, artifacts, configuration and interfaces, not its source.
-- One public GitHub repository.
+- One public GitHub repository, MIT licensed.
+- Everything attendees use is hosted online at public URLs. No tunnels and no serving from the organizer's laptop.
 - No gore, blood or health mechanics.
 
 ## Documentation

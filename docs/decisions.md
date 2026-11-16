@@ -7,7 +7,7 @@ Status values:
 - **requirement**: stated by the organizer in the project brief.
 - **agreed**: decided with the organizer during planning.
 - **delegated**: chosen by AI under an explicit delegation.
-- **proposed**: AI recommendation, not yet confirmed. Work may proceed on it where noted.
+- **proposed**: AI recommendation, not yet confirmed. Only the workspace tooling in D-06 remains in this state.
 - **assumption**: taken as true without confirmation.
 - **deferred**, **superseded**: as named.
 
@@ -22,17 +22,19 @@ Status values:
 | [D-05](#d-05) | Public GitHub repository | agreed |
 | [D-06](#d-06) | One repository with npm workspaces | agreed (one repository); proposed (tooling) |
 | [D-07](#d-07) | Game technology | delegated |
-| [D-08](#d-08) | Static, client-only, portable build | proposed |
-| [D-09](#d-09) | Runtime configuration file | proposed |
-| [D-10](#d-10) | World defined as data | proposed |
-| [D-11](#d-11) | Test hook and automated acceptance tests | proposed |
-| [D-12](#d-12) | Hosting providers | proposed |
-| [D-13](#d-13) | Backend stack | proposed, tentative |
-| [D-14](#d-14) | Deployment through GitHub Actions with path filters | proposed |
+| [D-08](#d-08) | Static, client-only, portable build | agreed |
+| [D-09](#d-09) | Runtime configuration file | agreed |
+| [D-10](#d-10) | World defined as data | agreed |
+| [D-11](#d-11) | Test hook and automated acceptance tests | agreed |
+| [D-12](#d-12) | Hosting providers | agreed |
+| [D-13](#d-13) | Backend stack | agreed; details set at S05 prep |
+| [D-14](#d-14) | Deployment through GitHub Actions with path filters | agreed |
 | [D-15](#d-15) | No custom domain | assumption |
-| [D-16](#d-16) | Superpowers is optional | proposed |
-| [D-17](#d-17) | Session lineup | proposed |
+| [D-16](#d-16) | Superpowers is optional | agreed |
+| [D-17](#d-17) | Session lineup | agreed |
 | [D-18](#d-18) | First-person camera | delegated |
+| [D-19](#d-19) | Online only: no tunnels, no serving from the organizer's laptop | requirement |
+| [D-20](#d-20) | MIT licence | agreed |
 
 ## Decisions
 
@@ -49,7 +51,7 @@ S01 covers the dev server and build output locally; S02 covers the path to a pub
 ### D-03
 
 **Mixed participation.** Status: agreed.
-Every session must work for an attendee who has only a browser with DevTools. Cloning and running locally is optional. Consequence: session 1 needs the organizer's laptop reachable on the room network ([Q-07](#q-07)). Affects: all session files.
+Every session must work for an attendee who has only a browser with DevTools. Cloning and running locally is optional. Consequence under [D-19](#d-19): browser-only attendees use public URLs, so hosted deployments must exist before session 1. Affects: all session files.
 
 ### D-04
 
@@ -73,37 +75,37 @@ Rationale and consequences: [design.md § 3](design.md#3-selected-game-technolog
 
 ### D-08
 
-**The game build is static, client-only and portable.** Status: proposed. Phase 1 proceeds on it.
+**The game build is static, client-only and portable.** Status: agreed (2026-11-16).
 Relative asset URLs, self-hosted assets, no third-party requests, no server logic. Required by S01–S04. Affects: design.md § 1, § 4; G0 criteria 7–10.
 
 ### D-09
 
-**Runtime configuration through `config.json`.** Status: proposed. Phase 1 proceeds on it.
+**Runtime configuration through `config.json`.** Status: agreed (2026-11-16).
 Alternative: build-time environment variables, rejected because one artifact must be deployable to several hosts with different settings. Affects: [design.md § 5](design.md#5-configuration-interfaces-and-data-flows).
 
 ### D-10
 
-**The static world is defined in `world.json`.** Status: proposed. Phase 1 proceeds on it.
+**The static world is defined in `world.json`.** Status: agreed (2026-11-16).
 Enables visible changes without touching game code and seeds the object schema for S07. Cost: a schema to maintain. Affects: design.md § 5, G0, G4.
 
 ### D-11
 
-**Test hook and automated acceptance tests.** Status: proposed. Phase 1 proceeds on it.
+**Test hook and automated acceptance tests.** Status: agreed (2026-11-16).
 Because no human reads the game source, acceptance is automated against the built output through a small documented hook on `window`. The hook is visible to anyone in DevTools; that is acceptable for a demo. Affects: G0 criterion 13, T-015.
 
 ### D-12
 
-**Hosting providers.** Status: proposed. Confirm during T-030.
-Cloudflare for static hosting, tunnels and edge functions; GitHub Pages as the contrast host; Render free tier for containers and the Node server, with laptop plus tunnel as fallback. Table and alternatives: [design.md § Delivery arrangements](design.md#delivery-arrangements) and [§ 7](design.md#7-backend-and-infrastructure-alternatives). Card requirements for Cloudflare and Render were not confirmed from their documentation; check at sign-up.
+**Hosting providers.** Status: agreed (2026-11-16). Card requirements still to be checked during T-030; a card request triggers D-04.
+Cloudflare for static hosting and edge functions; GitHub Pages as the contrast host; Render free tier for containers and the Node server. No tunnels and no laptop-hosted fallback ([D-19](#d-19)). Table and alternatives: [design.md § Delivery arrangements](design.md#delivery-arrangements) and [§ 7](design.md#7-backend-and-infrastructure-alternatives). Card requirements for Cloudflare and Render were not confirmed from their documentation; check at sign-up.
 
 ### D-13
 
-**Backend: Node, TypeScript, `ws`, JSON messages, in-memory state.** Status: proposed, tentative. Decide when S05 is scheduled.
+**Backend: Node, TypeScript, `ws`, JSON messages, in-memory state.** Status: agreed (2026-11-16). Message types and hosting details are set when S05 is prepared.
 Deliberately minimal so the mechanism is visible. Affects: [design.md § Tentative: backend interfaces](design.md#tentative-backend-interfaces).
 
 ### D-14
 
-**Deployment: GitHub Actions, one workflow per deployable, path filters, manual command as backup.** Status: proposed.
+**Deployment: GitHub Actions, one workflow per deployable, path filters, manual command as backup.** Status: agreed (2026-11-16).
 Shows independent deployment from one repository. Affects: [design.md § 6](design.md#6-build-and-deployment).
 
 ### D-15
@@ -113,18 +115,27 @@ A domain costs money. Sessions use provider hostnames. Consequence: DNS is obser
 
 ### D-16
 
-**Superpowers is optional workflow tooling, not a project requirement.** Status: proposed.
+**Superpowers is optional workflow tooling, not a project requirement.** Status: agreed (2026-11-16).
 Evaluation: it is an MIT-licensed plugin of agent skills (brainstorm, plan, worktrees, test-driven development, subagent execution, review). Its test-first and review steps suit a black-box game that is accepted through tests. Its brainstorming and planning steps overlap with these documents and would reopen settled decisions unless told to treat `docs/` as the specification. Recommendation: optionally try it for Phase 1 with that instruction; keep nothing in the repository that depends on it.
 
 ### D-17
 
-**Session lineup S01–S10.** Status: proposed.
+**Session lineup S01–S10.** Status: agreed (2026-11-16) as the working lineup.
 See [forum-plan.md](forum-plan.md). S01–S03 are intended as planned; S04–S10 are candidates. S09 was added by AI.
 
 ### D-18
 
 **First-person camera.** Status: delegated.
 Simplest inside a building. Avatars for other players arrive with G3.
+
+### D-19
+
+**Online only.** Status: requirement (organizer, 2026-11-16).
+Everything attendees use is served from proper cloud hosting at a public URL. No tunnels, no attendee access to the organizer's laptop, no improvised workarounds. Local commands are shown on the shared screen or run by attendees on their own machines. Consequences: Quick Tunnels are dropped from S02 and from every fallback; the two static deployments move ahead of S01; a failed hosted demonstration falls back to captures or a shared-screen local run, never to laptop hosting; hosted servers have no live substitute, so rehearsal and wake-up steps matter more. Supersedes Q-07. Affects: all session files, [design.md § Delivery arrangements](design.md#delivery-arrangements), tasks Phases 2–3.
+
+### D-20
+
+**MIT licence.** Status: agreed (2026-11-16). `LICENSE` at the repository root. Resolves Q-08.
 
 ## Open questions
 
@@ -136,8 +147,8 @@ Simplest inside a building. Avatars for other players arrive with G3.
 | [Q-04](#q-04) | Which synchronisation solution to showcase | T-120 | S06 prep |
 | [Q-05](#q-05) | Persistence for placed objects | T-130 | S07 prep |
 | [Q-06](#q-06) | Run the email session at all, and with which provider | T-160 | After S07 |
-| [Q-07](#q-07) | Room network constraints | S01 and S02 rehearsal | T-022 |
-| [Q-08](#q-08) | Licence for the public repository | Nothing; affects reuse by others | T-002 |
+| [Q-07](#q-07) | Room network constraints | Resolved by [D-19](#d-19) | — |
+| [Q-08](#q-08) | Licence for the public repository | Resolved by [D-20](#d-20) | — |
 
 None blocks Phase 0 or Phase 1.
 
@@ -151,7 +162,7 @@ A domain is a small yearly cost, which breaks the zero-cost rule unless one alre
 
 ### Q-03
 
-A free virtual machine (for example Oracle Always Free) would let S04 show a server with SSH, a reverse proxy and certificates, but needs a card. Without it, Path A is a container on a free container host or on the laptop behind a tunnel. Recommendation: start card-free; revisit if S04 feels thin.
+A free virtual machine (for example Oracle Always Free) would let S04 show a server with SSH, a reverse proxy and certificates, but needs a card. Without it, Path A is a container on a free container host; a laptop behind a tunnel is ruled out by [D-19](#d-19). Recommendation: start card-free; revisit if S04 feels thin.
 
 ### Q-04
 
@@ -167,11 +178,11 @@ Lowest-priority candidate. Depends on Q-02 and on a provider check.
 
 ### Q-07
 
-Can attendees reach the organizer's laptop on the room network? Are outbound tunnels and the hosting domains allowed on the corporate network and VPN? Determines S01's participation mode and S02's first step.
+Resolved 2026-11-16 by [D-19](#d-19): no laptop access and no tunnels. Remaining check, done in rehearsal: the corporate network and VPN reach the hosting domains and do not alter DNS or TLS in ways that change what attendees observe.
 
 ### Q-08
 
-No licence file exists. Without one, a public repository gives others no right to reuse it. The dependencies are MIT or Apache-2.0, which constrain nothing here. Raised by T-001.
+Resolved 2026-11-16 by [D-20](#d-20): MIT. The dependencies are MIT or Apache-2.0, which constrain nothing here. Raised by T-001.
 
 ## References
 
@@ -181,7 +192,6 @@ Checked on 2026-11-16 unless marked otherwise.
 | --- | --- | --- |
 | Cloudflare Workers free plan | 100,000 requests per day; 10 ms CPU per invocation; static asset requests free and unlimited | https://developers.cloudflare.com/workers/platform/pricing/ |
 | Cloudflare Durable Objects free plan | Available with SQLite backend only; 100,000 requests per day; 13,000 GB-s per day; 5 GB storage; incoming WebSocket messages billed 20:1; operations fail when a limit is exceeded | https://developers.cloudflare.com/durable-objects/platform/pricing/ |
-| Cloudflare Quick Tunnels | No account or domain; random hostname per run; 200 concurrent requests; no Server-Sent Events; no uptime guarantee; WebSocket support not stated on the page | https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/trycloudflare/ |
 | GitHub Pages | 1 GB site; 100 GB per month soft bandwidth limit; 10 builds per hour soft limit, not applied to custom Actions workflows | https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits |
 | Render free web services | Sleep after 15 minutes without traffic; about one minute to wake; 750 instance hours per month; no persistent disk; may restart at any time | https://render.com/docs/free |
 | Superpowers | Plugin of composable agent skills; MIT | https://github.com/obra/superpowers |
@@ -191,7 +201,6 @@ Not verified this session; confirm before relying on them:
 
 - Whether Cloudflare and Render ask for a payment card at sign-up.
 - Docker support on Render free instances.
-- WebSocket support through Quick Tunnels.
 - GitHub Pages default cache headers and lack of custom header control.
 - GitHub Actions being free for public repositories on standard runners.
 

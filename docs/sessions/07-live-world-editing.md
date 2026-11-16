@@ -80,7 +80,7 @@ Rehearsal checklist:
 
 ## Fallback
 
-Use the pre-wired placer. If the hosted server fails, run it locally behind a tunnel.
+Use the pre-wired placer. If the hosted server fails, demonstrate on the shared screen with a local server; attendees cannot join that run ([D-19](../decisions.md#d-19)).
 
 ## Links
 

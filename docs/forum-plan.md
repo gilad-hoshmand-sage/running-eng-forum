@@ -1,6 +1,6 @@
 # Forum plan (primary roadmap)
 
-The session lineup is **proposed** ([D-17](decisions.md#d-17)). Sessions 1–3 are planned in detail; sessions 4–10 are tentative and can be reordered, merged, dropped or replaced. Game work is tracked separately in [game-roadmap.md](game-roadmap.md).
+The session lineup is **agreed** as the working plan ([D-17](decisions.md#d-17)). Sessions 1–3 are planned in detail; sessions 4–10 are tentative and can be reordered, merged, dropped or replaced. Game work is tracked separately in [game-roadmap.md](game-roadmap.md).
 
 ## Learning objectives
 
@@ -28,7 +28,7 @@ Effort is the organizer's preparation with AI, including integration and rehears
 
 | # | Session | Outcome type | Game changes | Prep effort | Status |
 | --- | --- | --- | --- | --- | --- |
-| [S01](sessions/01-dev-server-and-build.md) | The dev server and the build | Learning | None beyond [G0](game-roadmap.md#g0-playable-baseline) | S (after G0, which is L) | Detailed |
+| [S01](sessions/01-dev-server-and-build.md) | The dev server and the build | Learning | None beyond [G0](game-roadmap.md#g0-playable-baseline) | M (G0 is done) | Detailed |
 | [S02](sessions/02-localhost-to-public-url.md) | From localhost to a public URL | Learning, functionality | None | M | Detailed |
 | [S03](sessions/03-caching-and-releases.md) | Caching and shipping a new version | Learning | None required; [G1](game-roadmap.md#g1-new-version-notice) optional | M | Detailed |
 | [S04](sessions/04-delivery-paths.md) | Three ways to serve the same build | Learning, tool awareness | None | L | Tentative |
@@ -60,9 +60,9 @@ flowchart LR
 
 | Stage | Infrastructure to prepare | Tasks |
 | --- | --- | --- |
-| Before S01 | Repository, game baseline, local static-server examples | [Phases 0–2](tasks.md) |
-| Before S02 | Cloudflare account, static deployment, deploy workflow, tunnel rehearsal | [Phase 3](tasks.md#phase-3-session-2-preparation) |
-| Before S03 | Header configuration, second host, release and rollback rehearsal | [Phase 4](tasks.md#phase-4-session-3-preparation) |
+| Before S01 | Repository, game baseline, two public static deployments, local static-server examples | [Phases 0–2](tasks.md) |
+| Before S02 | Deploy workflow for both hosts, command sheet | [Phase 3](tasks.md#phase-3-session-2-preparation) |
+| Before S03 | Header configuration, misconfigured deployment, release and rollback rehearsal | [Phase 4](tasks.md#phase-4-session-3-preparation) |
 | Before S04 | Container image, public container host, edge function | [Later work](tasks.md#later-work-tentative) |
 | Before S05 | `apps/server`, `packages/shared`, Node hosting, G2 | Later work |
 | Before S06–S10 | See each session file | Later work |
@@ -71,9 +71,10 @@ flowchart LR
 
 Each session file states its starting state, reset steps, rehearsal checklist and fallback. Common rules:
 
-- Rehearse on the forum's actual network the day before ([Q-07](decisions.md#q-07)).
+- Everything attendees touch is a public cloud URL; no tunnels, no laptop serving ([D-19](decisions.md#d-19)).
+- Rehearse on the corporate network the day before, to confirm the hosting domains are reachable.
 - Wake any sleeping free-tier service 10 minutes before the session.
-- Keep a local equivalent of every hosted demonstration.
+- Keep a local run of each demonstration for the shared screen only, as a last resort.
 - Keep screenshots or a recorded capture of each key observation.
 - Tag the repository state used for each session (`session-01`, …) so it can be reproduced later.
 

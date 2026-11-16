@@ -168,16 +168,15 @@ The split between hashed and unhashed files is the basis of [S03](sessions/03-ca
 
 ### Delivery arrangements
 
-Proposed providers ([D-12](decisions.md#d-12)). None needs a custom domain ([D-15](decisions.md#d-15)).
+Providers ([D-12](decisions.md#d-12)). Everything attendees use is cloud-hosted; no tunnels and no laptop serving ([D-19](decisions.md#d-19)). None needs a custom domain ([D-15](decisions.md#d-15)).
 
 | Arrangement | Provider | Used in | Card needed |
 | --- | --- | --- | --- |
-| Laptop exposed through a tunnel | Cloudflare Quick Tunnel | S02, fallback for servers | No, and no account |
-| Managed static hosting on a CDN | Cloudflare (Workers static assets or Pages) | S02, S03, S04 | Not expected; confirm at sign-up |
-| Second static host for contrast | GitHub Pages | S03, S04 | No |
-| Container serving static files | Docker locally; Render free web service for a public URL | S01, S04 | Not confirmed; see [Q-03](decisions.md#q-03) |
+| Managed static hosting on a CDN | Cloudflare (Workers static assets or Pages) | S01–S04 | Not expected; confirm at sign-up |
+| Second static host for contrast | GitHub Pages | S01–S04 | No |
+| Container serving static files | Render free web service for a public URL; Docker locally on the shared screen only | S01 (screen), S04 | Not confirmed; see [Q-03](decisions.md#q-03) |
 | Edge function in the request path | Cloudflare Workers free plan | S04 | Not expected |
-| Long-running Node server | Render free web service; laptop + tunnel as fallback | S05–S08 | Not confirmed |
+| Long-running Node server | Render free web service | S05–S08 | Not confirmed |
 | Stateful edge alternative | Cloudflare Durable Objects (free plan, SQLite backend) | Contrast in S06 or later | Not expected |
 
 Free-tier figures and their sources are in [decisions.md § References](decisions.md#references).
@@ -239,7 +238,7 @@ Decision: [D-13](decisions.md#d-13).
 - Transport: one WebSocket per player, JSON messages, each with a `type` field. Schemas in `packages/shared`.
 - HTTP API for the placement UI and bots: create, list and delete world objects.
 - State in server memory first. Persistence is decided with [S07](sessions/07-live-world-editing.md) ([Q-05](decisions.md#q-05)).
-- The server is a plain Node process with a Dockerfile, so it runs identically on a laptop, in a container and on a host.
+- The server is a plain Node process with a Dockerfile, so it runs identically in local development, in a container and on a host.
 
 Message types, rates and authority rules are specified when [S05](sessions/05-first-backend.md) and [S06](sessions/06-multiplayer-sync.md) are prepared.
 
@@ -267,9 +266,8 @@ flowchart LR
 
 | Need | Chosen (proposed) | Alternatives considered | Why not first |
 | --- | --- | --- | --- |
-| Static hosting | Cloudflare | Netlify, Vercel | Cloudflare exposes cache and edge headers clearly and offers edge functions and tunnels on one free account |
+| Static hosting | Cloudflare | Netlify, Vercel | Cloudflare exposes cache and edge headers clearly and offers edge functions on the same free account |
 | Contrast host | GitHub Pages | — | Already available with the repository; no header control, which is the contrast |
-| Public URL for a laptop | Cloudflare Quick Tunnel | ngrok | Quick Tunnel needs no account |
 | Node hosting | Render free | Fly.io, Oracle Always Free VM, Railway | These need a payment card or have no standing free tier ([Q-03](decisions.md#q-03)) |
 | Realtime transport | WebSocket via `ws` | Socket.IO, WebRTC | `ws` is the smallest thing that shows the mechanism |
 | Sync framework to showcase | Open ([Q-04](decisions.md#q-04)) | Colyseus, Durable Objects/PartyServer, Yjs | Chosen when S06 is prepared |

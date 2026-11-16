@@ -78,7 +78,7 @@ Rehearsal checklist:
 
 ## Fallback
 
-Run server and bot locally. Show a recording of the unprotected attack.
+Run server and bot locally on the shared screen. Show a recording of the unprotected attack.
 
 ## Links
 
