@@ -2,11 +2,11 @@
 
 The game changes only when a session needs it or engagement justifies it. The sequence of sessions is in [forum-plan.md](forum-plan.md); this document does not follow its phases.
 
-**Status: nothing implemented.** The game is AI-owned. Items are stated as capabilities, interfaces and acceptance criteria; internals are left to the implementing AI. Technology: [design.md § 3](design.md#3-selected-game-technology).
+**Status: G0 implemented and verified on 2026-11-16 ([record](tasks.md#phase-1-verification-record)); it awaits the organizer's play check. Nothing else is implemented.** The game is AI-owned. Items are stated as capabilities, interfaces and acceptance criteria; internals are left to the implementing AI. Technology: [design.md § 3](design.md#3-selected-game-technology).
 
 | Item | Summary | Needed by | Status |
 | --- | --- | --- | --- |
-| [G0](#g0-playable-baseline) | Local single-player baseline with operational surface | S01, S02, S03 | Planned, required |
+| [G0](#g0-playable-baseline) | Local single-player baseline with operational surface | S01, S02, S03 | Implemented 2026-11-16; awaiting play check |
 | [G1](#g1-new-version-notice) | "New version available" notice | S03 (optional) | Tentative |
 | [G2](#g2-lobby-and-chat) | Name entry, connection to a server, chat | S05 | Tentative |
 | [G3](#g3-remote-players) | Other players visible and moving | S06 | Tentative |
@@ -61,7 +61,7 @@ Verification:
 
 ### Inexpensive optional inclusion
 
-A door that opens with a key press may be included in G0 if it does not add risk. Otherwise it belongs to [G6](#g6-engagement-extras).
+A door that opens with a key press may be included in G0 if it does not add risk. Otherwise it belongs to [G6](#g6-engagement-extras). Not included: the doorways are open.
 
 ## G1: New version notice
 

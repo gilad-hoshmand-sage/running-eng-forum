@@ -137,6 +137,7 @@ Simplest inside a building. Avatars for other players arrive with G3.
 | [Q-05](#q-05) | Persistence for placed objects | T-130 | S07 prep |
 | [Q-06](#q-06) | Run the email session at all, and with which provider | T-160 | After S07 |
 | [Q-07](#q-07) | Room network constraints | S01 and S02 rehearsal | T-022 |
+| [Q-08](#q-08) | Licence for the public repository | Nothing; affects reuse by others | T-002 |
 
 None blocks Phase 0 or Phase 1.
 
@@ -168,6 +169,10 @@ Lowest-priority candidate. Depends on Q-02 and on a provider check.
 
 Can attendees reach the organizer's laptop on the room network? Are outbound tunnels and the hosting domains allowed on the corporate network and VPN? Determines S01's participation mode and S02's first step.
 
+### Q-08
+
+No licence file exists. Without one, a public repository gives others no right to reuse it. The dependencies are MIT or Apache-2.0, which constrain nothing here. Raised by T-001.
+
 ## References
 
 Checked on 2026-11-16 unless marked otherwise.
@@ -180,6 +185,7 @@ Checked on 2026-11-16 unless marked otherwise.
 | GitHub Pages | 1 GB site; 100 GB per month soft bandwidth limit; 10 builds per hour soft limit, not applied to custom Actions workflows | https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits |
 | Render free web services | Sleep after 15 minutes without traffic; about one minute to wake; 750 instance hours per month; no persistent disk; may restart at any time | https://render.com/docs/free |
 | Superpowers | Plugin of composable agent skills; MIT | https://github.com/obra/superpowers |
+| Game dependencies | Three.js 0.187.0 MIT; `@dimforge/rapier3d` 0.21.0 Apache-2.0; Vite 8.3.8 MIT; `vite-plugin-wasm` 3.6.0 MIT; TypeScript 7.0.2 Apache-2.0; `@playwright/test` 1.65.1 Apache-2.0 | npm registry metadata (`npm view <package> version license`) |
 
 Not verified this session; confirm before relying on them:
 
@@ -188,6 +194,5 @@ Not verified this session; confirm before relying on them:
 - WebSocket support through Quick Tunnels.
 - GitHub Pages default cache headers and lack of custom header control.
 - GitHub Actions being free for public repositories on standard runners.
-- Licences and current versions of Three.js, Rapier, Vite and Playwright.
 
 Expected load against limits: 30 attendees loading a build of a few megabytes is negligible for every static host listed. Ten players sending 10–20 position messages per second for 45 minutes is roughly 270,000–540,000 messages; under Durable Objects billing that is about 13,500–27,000 requests, within the daily limit. Measure before S06.
