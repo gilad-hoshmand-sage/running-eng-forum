@@ -3,7 +3,19 @@ import { openGame, setInput, settle, state, teleport, track, walkTo } from './he
 
 // World landmarks used below come from public/world.json:
 // spawn (0, 0, 8) facing -z; building front wall outer face at z = -9, door at x = 0;
-// ground floor at y = 0.1, upper floor at y = 3.2; fence inner face at +-50.
+// ground floor at y = 0.1, upper floor at y = 3.2, roof terrace at y = 6.6; fence inner face at +-50.
+
+/** Spawn to the upper landing. */
+const UP_ROUTE: Array<[number, number]> = [
+  [0, -8], // in front of the door
+  [0, -10.5], // lobby
+  [-1, -15], // past the reception desk
+  [-1, -16.5], // stair hall entrance
+  [-6.25, -16.5],
+  [-6.25, -18.2], // foot of the stairs
+  [-0.4, -18.2], // top of the stairs
+  [0, -16], // upper landing
+];
 
 test.describe('play', () => {
   test('criterion 1: walk and look within 5 seconds of clicking the canvas', async ({ page }) => {
@@ -49,16 +61,7 @@ test.describe('play', () => {
 
   test('criterion 2: spawn to the upper floor and back outside', async ({ page }) => {
     await openGame(page);
-    const up: Array<[number, number]> = [
-      [0, -8], // in front of the door
-      [0, -10.5], // lobby
-      [-1, -15], // past the reception desk
-      [-1, -16.5], // stair hall entrance
-      [-6.25, -16.5],
-      [-6.25, -18.2], // foot of the stairs
-      [-0.4, -18.2], // top of the stairs
-      [0, -16], // upper landing
-    ];
+    const up = UP_ROUTE;
     for (const [x, z] of up) expect(await walkTo(page, x, z), `walk to ${x}, ${z}`).toBe(true);
     await settle(page);
     const top = await state(page);
@@ -182,6 +185,61 @@ test.describe('play', () => {
     await expect.poll(async () => (await state(page)).respawnCount).toBe(2);
     s = await state(page);
     expect(Math.hypot(s.position.x - s.world.spawn.x, s.position.z - s.world.spawn.z)).toBeLessThan(0.5);
+  });
+});
+
+test.describe('roof', () => {
+  test('stairs lead from the upper floor to the roof terrace', async ({ page }) => {
+    await openGame(page);
+    for (const [x, z] of UP_ROUTE) expect(await walkTo(page, x, z), `walk to ${x}, ${z}`).toBe(true);
+    expect(await walkTo(page, -1.6, -16.3)).toBe(true); // foot of the roof stairs
+    expect(await walkTo(page, -6.6, -16.3)).toBe(true); // top of the roof stairs
+    expect(await walkTo(page, -6.6, -14.5)).toBe(true); // step off onto the roof
+    expect(await walkTo(page, 2.5, -12)).toBe(true); // the seating area
+    await settle(page);
+    const s = await state(page);
+    expect(s.position.y).toBeGreaterThan(6.5);
+    expect(s.position.y).toBeLessThan(6.8);
+    expect(s.respawnCount).toBe(0);
+  });
+
+  test('the roof rail stops walking but can be jumped over', async ({ page }) => {
+    await openGame(page);
+    await teleport(page, 0, 6.6, -10.5, 180); // facing +z, toward the south rail at z = -8.74
+    await setInput(page, { forward: 1, run: true });
+    const walk = await track(page, 2000);
+    expect(walk.max.z).toBeLessThan(-8.7);
+    expect(walk.end.position.y).toBeGreaterThan(6.5);
+
+    await setInput(page, { forward: 1, run: true, jump: true });
+    await expect.poll(async () => (await state(page)).position.z, { timeout: 5000 }).toBeGreaterThan(-8);
+    await setInput(page, null);
+    await settle(page);
+    expect(Math.abs((await state(page)).position.y)).toBeLessThan(0.1);
+  });
+
+  test('the slide carries the player from the roof to the grass at running speed', async ({ page }) => {
+    await openGame(page);
+    await teleport(page, -6.6, 6.6, -10, 90); // facing -x, toward the gap in the west rail
+    await setInput(page, { forward: 1 });
+    await page.waitForFunction(() => window.__game!.state.sliding, null, { timeout: 5000 });
+    const startedAt = await page.evaluate(() => performance.now());
+    await setInput(page, null);
+    await page.waitForFunction(() => !window.__game!.state.sliding, null, { timeout: 10_000 });
+    const seconds = (await page.evaluate(() => performance.now())) / 1000 - startedAt / 1000;
+    const end = await state(page);
+    // About 18.9 m of slide at 7.5 m/s.
+    expect(seconds).toBeGreaterThan(2);
+    expect(seconds).toBeLessThan(3.5);
+    expect(Math.hypot(end.position.x + 25, end.position.z + 9)).toBeLessThan(0.3);
+    expect(Math.abs(end.position.y)).toBeLessThan(0.1);
+    expect(end.respawnCount).toBe(0);
+
+    // Walking away from the bottom does not start another ride.
+    await setInput(page, { forward: 1 });
+    const away = await track(page, 1000);
+    expect(away.end.sliding).toBe(false);
+    expect(away.end.position.x).toBeLessThan(-27);
   });
 });
 

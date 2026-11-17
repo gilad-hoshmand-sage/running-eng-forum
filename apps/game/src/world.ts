@@ -47,7 +47,19 @@ export interface StairsObject extends ObjectBase {
 export interface SheepObject extends ObjectBase {
   type: 'sheep';
 }
-export type WorldObject = BoxObject | CylinderObject | TreeObject | StairsObject | SheepObject;
+export interface SlideObject extends ObjectBase {
+  type: 'slide';
+  end: Vec3;
+  width: number;
+}
+export type WorldObject = BoxObject | CylinderObject | TreeObject | StairsObject | SheepObject | SlideObject;
+
+/** The riding surface of a slide: a straight line from `start` down to `end`. */
+export interface SlidePath {
+  start: Vec3;
+  end: Vec3;
+  width: number;
+}
 
 export interface WorldData {
   schemaVersion: 1;
@@ -154,8 +166,19 @@ export function validateWorld(raw: unknown): WorldData {
         break;
       case 'sheep':
         break;
+      case 'slide': {
+        const start = o.position as Vec3;
+        const end = reqVec3(o.end, `${where}.end`);
+        reqNum(o.width, `${where}.width`, 0.3);
+        if (!(end[1] < start[1])) fail(`${where}.end`, 'must be lower than position');
+        if (Math.hypot(end[0] - start[0], end[2] - start[2]) < 0.5) {
+          fail(`${where}.end`, 'must be at least 0.5 m from position horizontally');
+        }
+        needMaterial(o.material, `${where}.material`);
+        break;
+      }
       default:
-        fail(`${where}.type`, 'expected "box", "cylinder", "tree", "stairs" or "sheep"');
+        fail(`${where}.type`, 'expected "box", "cylinder", "tree", "stairs", "sheep" or "slide"');
     }
   });
   return raw as WorldData;
@@ -196,6 +219,7 @@ export interface BuiltWorld {
   colliderCount: number;
   /** Feet positions of the `sheep` objects. */
   sheep: Vec3[];
+  slides: SlidePath[];
 }
 
 export function buildWorld(data: WorldData, scene: THREE.Scene, physics: RAPIER.World): BuiltWorld {
@@ -204,6 +228,7 @@ export function buildWorld(data: WorldData, scene: THREE.Scene, physics: RAPIER.
   const materials = new Map<string, THREE.MeshLambertMaterial>();
   let colliderCount = 0;
   const sheep: Vec3[] = [];
+  const slides: SlidePath[] = [];
 
   const texture = (name: string): THREE.Texture => {
     let t = textures.get(name);
@@ -345,6 +370,41 @@ export function buildWorld(data: WorldData, scene: THREE.Scene, physics: RAPIER.
       case 'sheep':
         sheep.push(o.position);
         break;
+      case 'slide': {
+        // A chute whose top surface runs straight from `position` down to `end`, on posts.
+        const [sx, sy, sz] = o.position;
+        const [ex, ey, ez] = o.end;
+        const dx = ex - sx;
+        const dy = ey - sy;
+        const dz = ez - sz;
+        const run = Math.hypot(dx, dz);
+        const len = Math.hypot(run, dy);
+        const yaw = Math.atan2(dx, dz); // local +z points down the slide
+        const tilt = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.atan2(-dy, run));
+        const normal = new THREE.Vector3(0, 1, 0).applyQuaternion(tilt);
+        const mid = new THREE.Vector3(sx + dx / 2, sy + dy / 2, sz + dz / 2);
+        const thick = 0.1;
+        const wallH = 0.35;
+        const wallT = 0.06;
+        addBox(mid, yaw, normal.clone().multiplyScalar(-thick / 2), [o.width, thick, len], o.material!, solid, tilt);
+        for (const side of [-1, 1]) {
+          const c = normal.clone().multiplyScalar(wallH / 2 - thick).setX(side * (o.width / 2 + wallT / 2));
+          addBox(mid, yaw, c, [wallT, wallH, len], o.material!, solid, tilt);
+        }
+        // Posts down to the level of `end`, about every 4 m.
+        const posts = Math.floor(run / 4);
+        for (let i = 1; i <= posts; i++) {
+          const f = i / (posts + 1);
+          const h = sy + dy * f - thick - ey;
+          if (h < 0.2) continue;
+          const post = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, h, 10), material(o.material!));
+          post.position.set(sx + dx * f, ey + h / 2, sz + dz * f);
+          scene.add(post);
+          if (solid) addCollider(RAPIER.ColliderDesc.cylinder(h / 2, 0.08), post.position, new THREE.Quaternion());
+        }
+        slides.push({ start: o.position, end: o.end, width: o.width });
+        break;
+      }
       case 'stairs': {
         // Ascends toward local +x from `position` (centre of the bottom edge of the first step).
         const run = o.length / o.steps;
@@ -369,5 +429,5 @@ export function buildWorld(data: WorldData, scene: THREE.Scene, physics: RAPIER.
     }
   }
 
-  return { objectCount: data.objects.length, colliderCount, sheep };
+  return { objectCount: data.objects.length, colliderCount, sheep, slides };
 }

@@ -1,6 +1,6 @@
 # Demo game
 
-The forum's demo application: a small first-person 3D world with a park and a two-floor office building. It runs entirely in the browser.
+The forum's demo application: a small first-person 3D world with a park and a two-floor office building with a roof terrace and a slide down to the grass. It runs entirely in the browser.
 
 This file is the complete contract for using the game. You do not need to read the source. Roadmap item: [G0](../../docs/game-roadmap.md#g0-playable-baseline). Verification record: [docs/tasks.md](../../docs/tasks.md#phase-1-game-baseline-g0).
 
@@ -132,7 +132,7 @@ Fields common to all objects:
 
 | Key | Type | Meaning |
 | --- | --- | --- |
-| `type` | string | `"box"`, `"cylinder"`, `"tree"`, `"stairs"` or `"sheep"` |
+| `type` | string | `"box"`, `"cylinder"`, `"tree"`, `"stairs"`, `"sheep"` or `"slide"` |
 | `id` | string, optional | A label for humans and error messages |
 | `position` | `[x, y, z]` | Centre of the object's **base** |
 | `rotationYDeg` | number, optional | Rotation about the vertical axis. Default `0`. |
@@ -148,6 +148,7 @@ Per type:
 | `tree` | `height` (default 6), `trunkMaterial` (optional) | `material` is the foliage. Without them, materials named `treeFoliage` and `treeTrunk` are used if present. Only the trunk is solid. |
 | `stairs` | `width`, `rise`, `length`, `steps` | Climbs `rise` metres over `length` metres toward +x (before rotation). `position` is the centre of the bottom edge of the first step. Solid underneath. |
 | `sheep` | none | A sheep that grazes within about 5 m of `position` and can be ridden (§ 6). Place it on flat ground: it moves horizontally only and does not climb steps. `rotationYDeg` and `solid` are ignored. Counts toward the object count. |
+| `slide` | `end: [x, y, z]`, `width` (≥ 0.3) | A straight chute with low side walls. Its riding surface runs from `position` (top) to `end` (bottom); `end` must be lower and at least 0.5 m away horizontally. Posts about every 4 m reach down to the height of `end`. Stepping onto it rides it (§ 6). `rotationYDeg` is ignored. |
 
 Example:
 
@@ -175,6 +176,10 @@ The player also respawns automatically after leaving the world bounds.
 
 Sheep: jump onto a sheep's back (0.7 m high) to ride it. While riding, the walking, running and looking controls steer the sheep (5 m/s, 9 m/s with `Shift`), and `Space` hops off. A sheep stays where its rider leaves it. Respawning also ends the ride.
 
+Roof terrace: stairs from the upper floor's north-west corridor lead to the roof (`y = 6.6`), which has a barbecue, seating, a sun umbrella and a music box (a silent prop). A 0.7 m rail surrounds it; a running jump clears it. A gap in the west rail opens onto a slide that ends on the grass at about `(-25, 0, -9)`.
+
+Slides: stepping onto a slide carries the player down it at running speed (7.5 m/s) and leaves them standing at the bottom. Movement keys do nothing until then; looking and turning still work. Respawning ends the ride.
+
 Always visible: a controls hint (bottom-left) and `<deploymentLabel> · build <buildId>` (top-right).
 
 Diagnostics overlay (top-left, hidden by default):
@@ -189,7 +194,7 @@ Diagnostics overlay (top-left, hidden by default):
 | `connection` | Always `offline` in this build (placeholder for the backend) |
 | `position` | Feet position in metres |
 | `facing` | Yaw and pitch in degrees |
-| `grounded` | Whether the player is standing on something; adds `(riding a sheep)` while riding |
+| `grounded` | Whether the player is standing on something; adds `(riding a sheep)` while riding and `(on a slide)` while sliding |
 | `fps` | Frames per second, updated twice a second |
 | `world` | World name and object count |
 
@@ -210,8 +215,9 @@ Read-only state, `window.__game.state` (a fresh snapshot on every read):
 | `connectionState` | `"offline"` | Placeholder |
 | `position` | `{x, y, z}` | Feet position |
 | `yawDeg`, `pitchDeg` | number | Facing; yaw is within −180..180 |
-| `grounded` | boolean | Always `true` while riding |
+| `grounded` | boolean | Always `true` while riding or sliding |
 | `riding` | boolean | Whether the player is riding a sheep |
+| `sliding` | boolean | Whether the player is going down a slide |
 | `sheep` | array of `{x, y, z}` | Feet position of each sheep, in `world.json` order. To mount from a test: `teleport` to a sheep's `x`, `z` at `y` 2 and wait for `riding`. |
 | `fps` | number | |
 | `respawnCount` | number | Respawns since load, manual or automatic |
@@ -244,7 +250,7 @@ The game only advances while its tab is visible, as with any page animation.
 
 `npm test` checks, against the built output:
 
-- Play: loading and moving after a click; the route from spawn to the upper floor and back; solid ground, walls, window panes, corners, furniture and boundary; jumping; respawn; riding a sheep and hopping off.
+- Play: loading and moving after a click; the route from spawn to the upper floor and back; solid ground, walls, window panes, corners, furniture and boundary; jumping; respawn; riding a sheep and hopping off; the stairs to the roof terrace; the roof rail (blocks walking, can be jumped); the slide from the roof to the grass at running speed.
 - HUD: build ID against `version.json`; overlay contents and toggle; query overrides.
 - Build output: file layout, content-hashed names, separate `.wasm`, relative URLs, total size, a new build ID per build.
 - Delivery: three different static servers, at a root and under a sub-path; requests stay on the page's origin; edits to `config.json` and `world.json` apply after a reload; a broken `world.json` is reported on screen.

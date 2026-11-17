@@ -2,7 +2,7 @@
 
 The game changes only when a session needs it or engagement justifies it. The sequence of sessions is in [forum-plan.md](forum-plan.md); this document does not follow its phases.
 
-**Status: G0 implemented and verified on 2026-11-16 ([record](tasks.md#phase-1-verification-record)); it awaits the organizer's play check. From G6, rideable sheep were added on 2026-11-17. Nothing else is implemented.** The game is AI-owned. Items are stated as capabilities, interfaces and acceptance criteria; internals are left to the implementing AI. Technology: [design.md § 3](design.md#3-selected-game-technology).
+**Status: G0 implemented and verified on 2026-11-16 ([record](tasks.md#phase-1-verification-record)); it awaits the organizer's play check. From G6, rideable sheep and a roof terrace with a slide were added on 2026-11-17. Nothing else is implemented.** The game is AI-owned. Items are stated as capabilities, interfaces and acceptance criteria; internals are left to the implementing AI. Technology: [design.md § 3](design.md#3-selected-game-technology).
 
 | Item | Summary | Needed by | Status |
 | --- | --- | --- | --- |
@@ -12,7 +12,7 @@ The game changes only when a session needs it or engagement justifies it. The se
 | [G3](#g3-remote-players) | Other players visible and moving | S06 | Tentative |
 | [G4](#g4-live-world-objects) | Objects added and removed at runtime from server state | S07, S08 | Tentative |
 | [G5](#g5-client-diagnostics-reporting) | Client error and timing reports | S09 | Tentative |
-| [G6](#g6-engagement-extras) | Doors, a character, collectibles, sheep | None | Optional; sheep implemented 2026-11-17 |
+| [G6](#g6-engagement-extras) | Doors, a character, collectibles, sheep, roof terrace and slide | None | Optional; sheep and roof terrace implemented 2026-11-17 |
 
 Sessions needing no game change beyond G0: [S01](sessions/01-dev-server-and-build.md), [S02](sessions/02-localhost-to-public-url.md), [S03](sessions/03-caching-and-releases.md), [S04](sessions/04-delivery-paths.md), [S08](sessions/08-abuse-and-validation.md), [S10](sessions/10-email-integration.md).
 
@@ -104,3 +104,4 @@ Add only when attendees ask for more or a session wants a new hook. None is plan
 - A character that responds when approached.
 - Collectibles or points. Details are undecided.
 - **Sheep (implemented 2026-11-17, requested by the organizer; [T-017](tasks.md#phase-1-game-baseline-g0)).** Five sheep graze slowly outdoors. A player who lands on a sheep's back rides it with the walking controls; jumping hops off. Placement is a `sheep` object type in `world.json`; behaviour and controls: [apps/game/README.md § 5 and § 6](../apps/game/README.md#5-worldjson). Acceptance: the five sheep are present; landing on one sets `riding` in the test hook; forward input moves player and sheep together; jumping ends the ride; all G0 tests still pass.
+- **Roof terrace and slide (implemented 2026-11-17, requested by the organizer; [T-018](tasks.md#phase-1-game-baseline-g0)).** Stairs from the upper floor lead to the roof, which has a barbecue, seating and a music box (a prop) inside a rail that can be jumped. A gap in the rail opens onto a slide to the grass ending at about (-25, 0, -9); stepping on carries the player down at running speed. Placement is a `slide` object type in `world.json`; behaviour: [apps/game/README.md § 5 and § 6](../apps/game/README.md#5-worldjson). Acceptance: the roof is reachable on foot from spawn; the rail blocks walking and a running jump clears it; the slide ends within 0.3 m of (-25, 0, -9) in 2 to 3.5 s; the test hook reports `sliding`; all earlier tests still pass.

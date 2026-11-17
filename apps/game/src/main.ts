@@ -4,6 +4,7 @@ import './style.css';
 import { fetchVersion, loadConfig, type GameConfig } from './config';
 import { EYE_HEIGHT, NO_INPUT, Player, type MoveInput } from './player';
 import { Flock } from './sheep';
+import { Slides } from './slide';
 import { buildWorld, loadWorld } from './world';
 
 const BUILD_ID = __BUILD_ID__;
@@ -28,6 +29,8 @@ export interface GameState {
   grounded: boolean;
   /** True while the player is riding a sheep. */
   riding: boolean;
+  /** True while the player is going down a slide. */
+  sliding: boolean;
   /** Feet positions of the sheep, in world.json order. */
   sheep: Array<{ x: number; y: number; z: number }>;
   fps: number;
@@ -108,6 +111,7 @@ async function start(): Promise<void> {
   const built = buildWorld(world, scene, physics);
   const player = new Player(physics);
   const flock = new Flock(built.sheep, scene, physics, player);
+  const slides = new Slides(built.slides, player);
 
   const spawn = world.spawn;
   let respawnCount = 0;
@@ -193,7 +197,7 @@ async function start(): Promise<void> {
   const half = world.bounds.halfSize;
   const tick = () => {
     const input = currentInput();
-    if (!flock.step(FIXED_DT, input)) player.step(FIXED_DT, input);
+    if (!flock.step(FIXED_DT, input) && !slides.step(FIXED_DT, input)) player.step(FIXED_DT, input);
     physics.step();
     if (walk) {
       if (Math.hypot(walk.x - player.x, walk.z - player.z) < 0.25) finishWalk(true);
@@ -225,6 +229,7 @@ async function start(): Promise<void> {
     pitchDeg: player.pitch / DEG,
     grounded: player.grounded,
     riding: flock.riding,
+    sliding: slides.sliding,
     sheep: flock.positions,
     fps,
     respawnCount,
@@ -253,7 +258,7 @@ async function start(): Promise<void> {
       `connection  ${s.connectionState} (${s.config.serverUrl ? 'this build has no network code' : 'no server configured'})`,
       `position    x ${s.position.x.toFixed(2)}  y ${s.position.y.toFixed(2)}  z ${s.position.z.toFixed(2)}`,
       `facing      yaw ${s.yawDeg.toFixed(0)}°  pitch ${s.pitchDeg.toFixed(0)}°`,
-      `grounded    ${s.grounded ? 'yes' : 'no'}${s.riding ? ' (riding a sheep)' : ''}`,
+      `grounded    ${s.grounded ? 'yes' : 'no'}${s.riding ? ' (riding a sheep)' : ''}${s.sliding ? ' (on a slide)' : ''}`,
       `fps         ${s.fps}`,
       `world       ${s.world.name} (${s.world.objectCount} objects)`,
     ].join('\n');
