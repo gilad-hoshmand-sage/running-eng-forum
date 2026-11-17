@@ -231,3 +231,29 @@ test.describe('HUD', () => {
     expect(s.connectionState).toBe('offline');
   });
 });
+
+test.describe('sheep', () => {
+  test('landing on a sheep rides it with the walking controls; jumping hops off', async ({ page }) => {
+    await openGame(page);
+    const before = await state(page);
+    expect(before.sheep).toHaveLength(5);
+    expect(before.riding).toBe(false);
+
+    const s = before.sheep[0];
+    await teleport(page, s.x, 2, s.z, 90); // above its back, facing -x
+    await expect.poll(async () => (await state(page)).riding).toBe(true);
+
+    await setInput(page, { forward: 1 });
+    await expect.poll(async () => (await state(page)).position.x, { timeout: 5000 }).toBeLessThan(s.x - 5);
+    const riding = await state(page);
+    expect(riding.riding).toBe(true);
+    expect(riding.position.y).toBeCloseTo(0.7, 1);
+    expect(Math.hypot(riding.sheep[0].x - riding.position.x, riding.sheep[0].z - riding.position.z)).toBeLessThan(0.05);
+
+    await setInput(page, { forward: 1, jump: true });
+    await expect.poll(async () => (await state(page)).riding).toBe(false);
+    await setInput(page, { forward: 1 }); // keep moving so the landing is on the grass, not the sheep
+    await expect.poll(async () => (await state(page)).position.y, { timeout: 5000 }).toBeCloseTo(0, 1);
+    expect((await state(page)).riding).toBe(false);
+  });
+});

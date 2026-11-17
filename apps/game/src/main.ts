@@ -3,6 +3,7 @@ import * as RAPIER from '@dimforge/rapier3d';
 import './style.css';
 import { fetchVersion, loadConfig, type GameConfig } from './config';
 import { EYE_HEIGHT, NO_INPUT, Player, type MoveInput } from './player';
+import { Flock } from './sheep';
 import { buildWorld, loadWorld } from './world';
 
 const BUILD_ID = __BUILD_ID__;
@@ -25,6 +26,10 @@ export interface GameState {
   yawDeg: number;
   pitchDeg: number;
   grounded: boolean;
+  /** True while the player is riding a sheep. */
+  riding: boolean;
+  /** Feet positions of the sheep, in world.json order. */
+  sheep: Array<{ x: number; y: number; z: number }>;
   fps: number;
   respawnCount: number;
   pointerLocked: boolean;
@@ -102,6 +107,7 @@ async function start(): Promise<void> {
   physics.timestep = FIXED_DT;
   const built = buildWorld(world, scene, physics);
   const player = new Player(physics);
+  const flock = new Flock(built.sheep, scene, physics, player);
 
   const spawn = world.spawn;
   let respawnCount = 0;
@@ -186,7 +192,8 @@ async function start(): Promise<void> {
 
   const half = world.bounds.halfSize;
   const tick = () => {
-    player.step(FIXED_DT, currentInput());
+    const input = currentInput();
+    if (!flock.step(FIXED_DT, input)) player.step(FIXED_DT, input);
     physics.step();
     if (walk) {
       if (Math.hypot(walk.x - player.x, walk.z - player.z) < 0.25) finishWalk(true);
@@ -217,6 +224,8 @@ async function start(): Promise<void> {
     yawDeg: norm(player.yaw / DEG),
     pitchDeg: player.pitch / DEG,
     grounded: player.grounded,
+    riding: flock.riding,
+    sheep: flock.positions,
     fps,
     respawnCount,
     pointerLocked: locked(),
@@ -244,7 +253,7 @@ async function start(): Promise<void> {
       `connection  ${s.connectionState} (${s.config.serverUrl ? 'this build has no network code' : 'no server configured'})`,
       `position    x ${s.position.x.toFixed(2)}  y ${s.position.y.toFixed(2)}  z ${s.position.z.toFixed(2)}`,
       `facing      yaw ${s.yawDeg.toFixed(0)}°  pitch ${s.pitchDeg.toFixed(0)}°`,
-      `grounded    ${s.grounded ? 'yes' : 'no'}`,
+      `grounded    ${s.grounded ? 'yes' : 'no'}${s.riding ? ' (riding a sheep)' : ''}`,
       `fps         ${s.fps}`,
       `world       ${s.world.name} (${s.world.objectCount} objects)`,
     ].join('\n');
@@ -312,6 +321,7 @@ async function start(): Promise<void> {
       player.prevZ + (player.z - player.prevZ) * a,
     );
     camera.rotation.set(player.pitch, player.yaw, 0);
+    flock.render(a);
     renderer.render(scene, camera);
 
     frames++;

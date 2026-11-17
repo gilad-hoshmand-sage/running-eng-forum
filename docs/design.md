@@ -219,7 +219,7 @@ The static world (terrain bounds, building, furniture, props) is described in `w
 - "Changing content" and "deploying a new version" can be shown as different things in [S07](sessions/07-live-world-editing.md).
 - The object schema later becomes the shared contract for placed objects.
 
-As built (verified 2026-11-16): schema version 1 with named materials and four object types (`box`, `cylinder`, `tree`, `stairs`). Authoritative schema: [apps/game/README.md § 5](../apps/game/README.md#5-worldjson).
+As built (verified 2026-11-16): schema version 1 with named materials and five object types (`box`, `cylinder`, `tree`, `stairs`, and `sheep` added 2026-11-17). Authoritative schema: [apps/game/README.md § 5](../apps/game/README.md#5-worldjson).
 
 ### Game operational surface
 

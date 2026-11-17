@@ -44,7 +44,10 @@ export interface StairsObject extends ObjectBase {
   length: number;
   steps: number;
 }
-export type WorldObject = BoxObject | CylinderObject | TreeObject | StairsObject;
+export interface SheepObject extends ObjectBase {
+  type: 'sheep';
+}
+export type WorldObject = BoxObject | CylinderObject | TreeObject | StairsObject | SheepObject;
 
 export interface WorldData {
   schemaVersion: 1;
@@ -149,8 +152,10 @@ export function validateWorld(raw: unknown): WorldData {
         }
         needMaterial(o.material, `${where}.material`);
         break;
+      case 'sheep':
+        break;
       default:
-        fail(`${where}.type`, 'expected "box", "cylinder", "tree" or "stairs"');
+        fail(`${where}.type`, 'expected "box", "cylinder", "tree", "stairs" or "sheep"');
     }
   });
   return raw as WorldData;
@@ -189,6 +194,8 @@ function scaleBoxUVs(geo: THREE.BoxGeometry, w: number, h: number, d: number, sc
 export interface BuiltWorld {
   objectCount: number;
   colliderCount: number;
+  /** Feet positions of the `sheep` objects. */
+  sheep: Vec3[];
 }
 
 export function buildWorld(data: WorldData, scene: THREE.Scene, physics: RAPIER.World): BuiltWorld {
@@ -196,6 +203,7 @@ export function buildWorld(data: WorldData, scene: THREE.Scene, physics: RAPIER.
   const textures = new Map<string, THREE.Texture>();
   const materials = new Map<string, THREE.MeshLambertMaterial>();
   let colliderCount = 0;
+  const sheep: Vec3[] = [];
 
   const texture = (name: string): THREE.Texture => {
     let t = textures.get(name);
@@ -334,6 +342,9 @@ export function buildWorld(data: WorldData, scene: THREE.Scene, physics: RAPIER.
         }
         break;
       }
+      case 'sheep':
+        sheep.push(o.position);
+        break;
       case 'stairs': {
         // Ascends toward local +x from `position` (centre of the bottom edge of the first step).
         const run = o.length / o.steps;
@@ -358,5 +369,5 @@ export function buildWorld(data: WorldData, scene: THREE.Scene, physics: RAPIER.
     }
   }
 
-  return { objectCount: data.objects.length, colliderCount };
+  return { objectCount: data.objects.length, colliderCount, sheep };
 }

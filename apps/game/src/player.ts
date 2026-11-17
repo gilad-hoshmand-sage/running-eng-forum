@@ -20,7 +20,7 @@ const CENTRE = HALF_HEIGHT + RADIUS;
 export const EYE_HEIGHT = 1.65;
 const WALK_SPEED = 4.5;
 const RUN_SPEED = 7.5;
-const TURN_SPEED = 2.2; // rad/s
+export const TURN_SPEED = 2.2; // rad/s
 const GRAVITY = 22;
 const JUMP_SPEED = 6.3; // apex about 0.9 m
 const MAX_FALL_SPEED = 40;
@@ -42,7 +42,7 @@ export class Player {
 
   private velY = 0;
   private readonly body: RAPIER.RigidBody;
-  private readonly collider: RAPIER.Collider;
+  readonly collider: RAPIER.Collider;
   private readonly controller: RAPIER.KinematicCharacterController;
 
   constructor(physics: RAPIER.World) {
@@ -68,6 +68,19 @@ export class Player {
     this.velY = 0;
     this.grounded = false;
     this.body.setTranslation({ x, y: y + CENTRE, z }, true);
+    this.body.setNextKinematicTranslation({ x, y: y + CENTRE, z });
+  }
+
+  /** Be carried to a feet position while riding; keeps render interpolation. */
+  carryTo(x: number, y: number, z: number): void {
+    this.prevX = this.x;
+    this.prevY = this.y;
+    this.prevZ = this.z;
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    this.velY = 0;
+    this.grounded = true;
     this.body.setNextKinematicTranslation({ x, y: y + CENTRE, z });
   }
 

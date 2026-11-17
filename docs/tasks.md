@@ -33,6 +33,7 @@ All **Game**, owner **AI**. Specification: [game-roadmap.md § G0](game-roadmap.
 | T-014 | HUD: controls hint, build ID, diagnostics overlay showing position, frame rate, deployment label, config values, connection state placeholder | T-011 | Overlay toggles and shows correct values | done 2026-11-16: automated |
 | T-015 | Test hook and automated acceptance tests against the built output ([D-11](decisions.md#d-11)) | T-012, T-013, T-014 | Criterion 13 passes; `npm test` is green from a fresh clone | done 2026-11-16: 21 tests pass in a fresh clone after `npm install` |
 | T-016 | Delivery hardening and contract: relative asset URLs, sub-path serving, no third-party requests, transfer size, three-server check, Safari and Firefox check, `apps/game/README.md` | T-015 | Criteria 5 to 10 and 14 pass; results recorded here | done 2026-11-16 with gaps: real Safari, real Firefox and real mouse capture were not checked; see record below |
+| T-017 | Rideable sheep ([G6](game-roadmap.md#g6-engagement-extras)): `sheep` object type in `world.json`, five placed outdoors, riding, test hook fields `riding` and `sheep` | T-016 | The G6 sheep acceptance passes; G0 tests still pass | done 2026-11-17: `npm test` 22 passed in Chromium (21 existing plus the sheep test); one grazing sheep and one ride inspected by AI in the dev server. Not checked: Safari, Firefox, frame rate on real hardware, the organizer's play check |
 
 After T-016 the organizer plays the game and accepts or returns it. This is the only human check of the game.
 
